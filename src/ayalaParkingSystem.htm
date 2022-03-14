@@ -1,0 +1,151 @@
+<html>
+<div class="container">
+  <div class="panel panel-primary">
+    <div class="panel-heading">PARK IN</div>
+      <div class="panel-body">
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label class="control-label">Plate Number</label>
+                  <input type="text" class="form-control" name="plate_num" id="plate_num" required>
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label class="control-label">Vehicle Type</label>
+		  <select class="form-control" name="vehicle_type" id="vehicle_type" required>
+			<option value="0">Small</option>
+			<option value="1">Medium</option>
+			<option value="2">Large</option>
+		  </select>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label class="control-label">Gate</label>
+                  <select class="form-control" name="gate" id="gate" required>
+			<option value="0">Gate 1</option>
+                        <option value="1">Gate 2</option>
+                        <option value="2">Gate 3</option>
+		  </select>
+               </div>
+            </div>
+            <div class='col-md-6'>
+               <div class="form-group">
+                  <label class="control-label">Park In Date Time</label>
+                  <div class='input-group date' id='datetimepicker1'>
+                     <input type='text' class="form-control"/>
+                     <span class="input-group-addon">
+                     <span class="glyphicon glyphicon-calendar"></span>
+                     </span>
+                  </div>
+               </div>
+            </div>
+        </div>
+	<div class="row" id="parkInRes">
+	</div>
+        <input type="submit" class="btn btn-primary" id="btnParkIn" name="btnParkIn" value="Submit">
+      </div>
+   </div>
+   <div class="panel panel-primary">
+    <div class="panel-heading">PARK OUT</div>
+      <div class="panel-body">
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label class="control-label">Plate Number</label>
+                  <select type="text" class="form-control" name="out_plate_num" id="out_plate_num"> </select>
+               </div>
+            </div>
+	    <div class='col-md-6'>
+               <div class="form-group">
+                  <label class="control-label">Park Out Date Time</label>
+                  <div class='input-group date' id='datetimepicker2'>
+                     <input type='text' class="form-control"  />
+                     <span class="input-group-addon">
+                     <span class="glyphicon glyphicon-calendar"></span>
+                     </span>
+                  </div>
+               </div>
+            </div>
+
+         </div>
+	<div class="row" id="parkOutRes">
+        </div>
+        <input type="submit" class="btn btn-primary" id="btnParkOut" name="btnParkOut" value="Submit">
+      </div>
+   </div>
+</div>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<script>
+  $(function () {
+    $('#datetimepicker1').datetimepicker({
+	format:'YYYY-MM-DD HH:mm:ss'	
+    });
+ });
+$(function () {
+    $('#datetimepicker2').datetimepicker({
+        format:'YYYY-MM-DD HH:mm:ss'   
+    });
+ });
+
+$(document).ready(function(){
+  fill_parked_vehicles();
+  $("#btnParkIn").click(function(){
+    $.ajax({
+		url: "http://localhost:8000/parkIn.php", 
+		type: 'GET',
+		data: {
+			"plate_number" : $("#plate_num").val(),
+			"vehicle_type" : $("#vehicle_type").val(),
+			"gate" : $("#gate").val(),
+			"time_in" : $("#datetimepicker1").find("input").val()
+		},
+		success: function(result){
+      			$("#parkInRes").html(result);
+			fill_parked_vehicles();
+    		}
+     });
+  });
+
+  $("#btnParkOut").click(function(){
+    $.ajax({
+                url: "http://localhost:8000/parkOut.php",
+                type: 'GET',
+                data: {
+                        "plate_number" : $("#out_plate_num").val(),
+                        "time_out" : $("#datetimepicker2").find("input").val()
+                },
+                success: function(result){
+                        $("#parkOutRes").html(result);
+                        fill_parked_vehicles();
+                }
+     });
+  });
+});
+
+
+function get_parkin_input(){
+	var param = {};
+	param['plate_num'] = $("#plate_num").val();
+	param['vehicle_type'] = $("#vehicle_type").val();
+}
+function fill_parked_vehicles() {
+   $.ajax({
+                url: "http://localhost:8000/parkAllParked.php",
+                type: 'GET',
+                success: function(result){
+                        $("#out_plate_num").html(result);
+                }
+     });
+}
+</script>
