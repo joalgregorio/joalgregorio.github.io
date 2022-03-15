@@ -1,6 +1,6 @@
 <?php
 
-require_once('controllers/parkingSlots.php');
+require_once('controllers/parkingController.php');
 
 date_default_timezone_set("Asia/Manila");
 

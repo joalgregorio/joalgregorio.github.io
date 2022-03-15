@@ -9,13 +9,13 @@ public function get_vehicle_types()
 			"vehicleName" : "Small"
 		},
 		{
-                        "vehicleType" : "1",
-                        "vehicleName" : "Medium"
-                },
+      "vehicleType" : "1",
+      "vehicleName" : "Medium"
+    },
 		{
-                        "vehicleType" : "2",
-                        "vehicleName" : "Large"
-                }
+      "vehicleType" : "2",
+      "vehicleName" : "Large"
+    }
 	]
 	';
 }
